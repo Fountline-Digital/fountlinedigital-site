@@ -25,7 +25,7 @@ export function SiteHeader() {
               className={
                 item.highlight
                   ? "rounded-full bg-foreground px-4 py-1.5 text-xs font-medium text-background shadow-sm hover:bg-foreground/90 transition"
-                  : "text-muted-foreground hover:text-foreground transition-colors"
+                  : "text-foreground hover:text-muted-foreground transition-colors"
               }
             >
               {item.label}

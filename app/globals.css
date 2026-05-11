@@ -49,20 +49,20 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(100% 0.00011 271.152);
+  --foreground: oklch(0% 0 0);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0% 0 0);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --popover-foreground: oklch(0% 0 0);
+  --primary: oklch(0% 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --secondary-foreground: oklch(0% 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0% 0 0);
   --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --accent-foreground: oklch(0% 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -74,28 +74,28 @@
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0% 0 0);
+  --sidebar-primary: oklch(0% 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent-foreground: oklch(0% 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
+  --background: oklch(0% 0 0);
+  --foreground: oklch(100% 0.00011 271.152);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: oklch(100% 0.00011 271.152);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
+  --muted-foreground: oklch(100% 0.00011 271.152);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
@@ -119,7 +119,7 @@
 
 .silver {
   /* Base surfaces */
-  --background: oklch(0.78 0 0);           /* ~#c0c0c0, light silver */
+  --background: oklch(80.78% 0.000 0);           /* ~#c0c0c0, light silver */
   --foreground: oklch(0.09 0 0);           /* near-black text */
 
   --card: oklch(0.86 0 0);                 /* slightly lighter card */
@@ -178,4 +178,124 @@
   html {
     @apply font-sans;
   }
+}
+/* HERO ANIMATION */
+@keyframes heroFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-animate {
+  opacity: 0;
+  animation: heroFadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes heroWave {
+  0% {
+    background-position: -200% 0;
+  }
+  50% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.hero-wave {
+  animation: heroWave 28s ease-in-out infinite;
+}
+
+@keyframes heroTiltStrong {
+  0% {
+    transform: translateY(0px) rotateX(8deg) rotateY(-10deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateX(14deg) rotateY(-16deg);
+  }
+  100% {
+    transform: translateY(0px) rotateX(8deg) rotateY(-10deg);
+  }
+}
+
+.hero-tilt-strong {
+  animation: heroTiltStrong 9s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+/* Wave + vignette theme styles */
+
+/* default / dark */
+.hero-wave-band {
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.5) 20%,
+    rgba(24, 24, 24, 0.7) 50%,
+    rgba(0, 0, 0, 0.5) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  opacity: 0.7;
+}
+
+.hero-vignette {
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+}
+
+/* light theme */
+.light .hero-wave-band {
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(207, 207, 207, 0.7) 50%,
+    rgba(255, 255, 255, 0.4) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  opacity: 0.7;
+}
+
+.light .hero-vignette {
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    transparent 65%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+}
+
+/* silver theme */
+.silver .hero-wave-band {
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(192, 192, 192, 0.4) 20%,
+    rgba(128, 128, 128, 0.7) 50%,
+    rgba(192, 192, 192, 0.4) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  opacity: 0.75;
+}
+
+.silver .hero-vignette {
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    transparent 65%,
+    rgba(192, 192, 192, 0.3) 100%
+  );
 }
