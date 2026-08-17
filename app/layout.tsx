@@ -3,6 +3,8 @@ import { Montserrat } from "next/font/google";
 
 import "./globals.css";
 import { NavBar } from "@/components/navbar";
+import { ConditionalNavbar } from "@/components/conditional-navbar";
+import { Footer } from "@/components/footer";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -26,8 +28,7 @@ export default function RootLayout({
       className={`${montserrat.className} h-full antialiased`}
     >
       <body className="min-h-full bg-black text-white">
-        <NavBar />
-
+        <ConditionalNavbar />
         <main className="min-h-screen">
           {children}
         </main>

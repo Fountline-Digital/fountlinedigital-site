@@ -131,4 +131,26 @@
     background: oklch(0.82 0 0 / 35%);
     color: oklch(1 0 0);
   }
+
+  @keyframes work-ticker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.work-ticker {
+  animation: work-ticker 30s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-ticker {
+    animation: none;
+  }
+}
+
+
 }

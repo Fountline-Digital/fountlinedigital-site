@@ -33,10 +33,10 @@ export function ContactSection() {
             </p>
 
             <a
-              href="mailto:support@fountlinedigital.com"
+              href="mailto:hello@fountlinedigital.com"
               className="mt-2 inline-flex text-sm text-muted-foreground transition-opacity hover:text-foreground hover:opacity-100"
             >
-              support@fountlinedigital.com
+              hello@fountlinedigital.com
             </a>
           </div>
         </div>
