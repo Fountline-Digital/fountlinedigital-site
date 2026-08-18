@@ -2,6 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 
 const leftLinks = [
   { label: "Home", href: "#hero" },
@@ -41,13 +42,19 @@ export function NavBar() {
         </div>
 
         <a
-          href="#hero"
-          onClick={closeMenu}
-          aria-label="Fountline home"
-          className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-semibold uppercase tracking-[0.24em] text-foreground/80 transition-opacity hover:text-foreground hover:opacity-100 focus-visible:text-foreground focus-visible:opacity-100"
-        >
-          Fountline
-        </a>
+  href="#hero"
+  aria-label="Fountline Digital home"
+  className="relative z-10 inline-flex items-center justify-center"
+>
+  <Image
+    src="/brand/FD_Logo_White.svg"
+    alt="Fountline Digital"
+    width={240}
+    height={80}
+    priority
+    className="h-12 w-auto sm:h-14 lg:h-16"
+  />
+</a>
 
         <div className="hidden flex-1 items-center justify-end gap-7 md:flex">
           {rightLinks.map((link) => (

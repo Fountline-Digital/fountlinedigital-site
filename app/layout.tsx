@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 
 import "./globals.css";
-import { NavBar } from "@/components/navbar";
 import { ConditionalNavbar } from "@/components/conditional-navbar";
-import { Footer } from "@/components/footer";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -12,9 +10,31 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Fountline Digital",
-  description: "Web and managed technology solutions.",
+  description: "Websites, apps, design, and ongoing digital support.",
+  icons: {
+    icon: [
+      {
+        url: "/brand/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/jpeg",
+      },
+      {
+        url: "/brand/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/jpeg",
+      },
+    ],
+    apple: [
+      {
+        url: "/brand/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/jpeg",
+      },
+    ],
+  },
+  manifest: "/brand/site.webmanifest",
 };
 
 export default function RootLayout({
