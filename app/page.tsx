@@ -8,7 +8,7 @@ import { WorkSection } from "@/components/work-section";
 
 export default function Home() {
   return (
-    <main className="h-screen snap-y snap-proximity overflow-y-auto scroll-smooth">
+    <main className="min-h-screen scroll-smooth">
       <HeroSection />
       <ServicesSection />
       <ProcessSection />
