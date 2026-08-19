@@ -1,49 +1,57 @@
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import { ModeToggle } from "@/components/mode-toggle";
-import { mainNavItems } from "./config/nav";
-import { MobileNav } from "@/components/mobile-nav";
-import { Main } from "next/document";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+
+import "./globals.css";
+import { ConditionalNavbar } from "@/components/conditional-navbar";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-montserrat",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 export const metadata = {
   title: "Fountline Digital",
-  description: "Modern web experiences for ambitious brands.",
+  description: "Websites, apps, design, and ongoing digital support.",
+  icons: {
+    icon: [
+      {
+        url: "/brand/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/jpeg",
+      },
+      {
+        url: "/brand/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/jpeg",
+      },
+    ],
+    apple: [
+      {
+        url: "/brand/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/jpeg",
+      },
+    ],
+  },
+  manifest: "/brand/site.webmanifest",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={montserrat.variable}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          storageKey="fountline-theme"
-          themes={["light", "dark", "silver"]}>
-            <div className="min-h-screen bg-background text-foreground flex flex-col">
-              {/* HEADER */}
-              <SiteHeader />
-              {/* MAIN CONTENT */}
-              <main className="flex-1">
-              {children}
-              </main>
-              {/* FOOTER */}
-              <SiteFooter />
-            </div>
-          </ThemeProvider>
+    <html
+      lang="en"
+      className={`${montserrat.className} h-full antialiased`}
+    >
+      <body className="min-h-full bg-black text-white">
+        <ConditionalNavbar />
+        <main className="min-h-screen">
+          {children}
+        </main>
       </body>
     </html>
   );

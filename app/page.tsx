@@ -1,12 +1,21 @@
-import Image from "next/image";
-import { HomeHero } from "../components/home-hero";
+import { ContactSection } from "@/components/contact-section";
+import { FaqSection } from "@/components/faq-section";
+import { Footer } from "@/components/footer";
+import { HeroSection } from "@/components/hero-section";
+import { ProcessSection } from "@/components/process-section";
 import { ServicesSection } from "@/components/services-section";
+import { WorkSection } from "@/components/work-section";
 
 export default function Home() {
   return (
-    <div className="space-y-16">
-      <HomeHero />
+    <main className="min-h-screen scroll-smooth">
+      <HeroSection />
       <ServicesSection />
-    </div>
+      <ProcessSection />
+      
+      <FaqSection />
+      <ContactSection />
+      <Footer />
+    </main>
   );
 }

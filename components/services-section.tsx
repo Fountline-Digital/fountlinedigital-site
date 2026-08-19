@@ -1,341 +1,439 @@
 "use client";
 
+import { ArrowUpRight, Check } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+
+import { buttonVariants } from "@/components/ui/button";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
-type ServiceType = "web" | "mobile" | "design";
+type Package = {
+  name: string;
+  label: string;
+  description: string;
+  highlights: string[];
+};
 
-const SERVICE_OPTIONS: { id: ServiceType; label: string }[] = [
-  { id: "web", label: "Web apps" },
-  { id: "mobile", label: "Mobile apps" },
-  { id: "design", label: "Design" },
+type Service = {
+  value: string;
+  label: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  packages: Package[];
+};
+
+const services: Service[] = [
+  {
+    value: "web",
+    label: "Web",
+    eyebrow: "Digital foundations",
+    title: "Web experiences built to move your business forward.",
+    description:
+      "From polished business websites to custom web applications, choose the right digital foundation for your next move.",
+    packages: [
+      {
+        name: "Essentials",
+        label: "Make a strong first impression.",
+        description:
+          "Best for: businesses that need a professional online presence without custom development.",
+        highlights: [
+          "Up to 5 pages",
+          "Up to 2 standard forms",
+          "Basic SEO and analytics setup",
+          "Hosting, domain, DNS, and email-record setup support",
+          "Legal pages included",
+          "1 revision round",
+          "30-day post-launch bug support",
+        ],
+      },
+      {
+        name: "Business",
+        label: "Build for momentum.",
+        description:
+          "Best for: established small businesses, growing service providers, professional firms, local companies with multiple services or locations, and organizations that need a stronger website to generate and manage leads.",
+        highlights: [
+          "Everything in Web Essentials",
+          "Up to 15 pages",
+          "Tailored layouts and content structure",
+          "Up to 4 standard forms",
+          "Booking, CRM, and lead-routing setup",
+          "Enhanced basic SEO and conversion tracking",
+          "Basic Store Add-On available",
+          "2 revision rounds",
+          "30-day post-launch bug support",
+        ],
+      },
+      {
+        name: "Enterprise",
+        label: "Create a better digital workflow.",
+        description:
+          "Best for: organizations that need a custom portal, internal system, advanced ecommerce experience, connected workflows, or scalable web application.",
+        highlights: [
+          "Negotiated, project-specific scope",
+          "Custom workflows, portals, dashboards, and user access",
+          "Database-backed features and business-system integrations",
+          "Advanced ecommerce, automation, reporting, or content management as needed",
+          "Security, performance, testing, documentation, training, and launch support based on scope",
+          "Optional ongoing maintenance and support",
+        ],
+      },
+      {
+        name: "Custom",
+        label: "Solve the complex version.",
+        description:
+          "Best for: organizations with specialized requirements, evolving product ideas, or a need for an ongoing technical partner.",
+        highlights: [
+          "Product discovery, strategy, and phased roadmaps",
+          "SaaS products, marketplaces, platforms, and custom applications",
+          "Advanced backend systems, APIs, automation, and integrations",
+          "Scalable architecture, security, deployment, and monitoring",
+          "Optional long-term development and maintenance support",
+        ],
+      },
+    ],
+  },
+  {
+    value: "mobile",
+    label: "Mobile Apps",
+    eyebrow: "Experiences in hand",
+    title: "Bring your idea to the devices people use every day.",
+    description:
+      "Create a polished mobile experience that makes your product, service, or internal workflow accessible anywhere.",
+    packages: [
+      {
+        name: "Essentials",
+        label: "Turn the idea into a direction.",
+        description:
+          "Best for: businesses, organizations, and events that want a straightforward branded app without accounts, backend systems, or custom functionality.",
+        highlights: [
+          "Native iOS or Android app",
+          "One app store per package",
+          "Up to 5 primary screens",
+          "Template-based design customized to your brand",
+          "Static, local app content",
+          "App-store submission support",
+          "1 revision round",
+          "30-day post-launch bug support",
+        ],
+      },
+      {
+        name: "Business",
+        label: "Bring the first version to life.",
+        description:
+          "Best for: businesses, organizations, and events that need a branded native app with customer accounts, live content, scheduling, service requests, event features, member resources, or a focused connection to an existing business system.",
+        highlights: [
+          "Everything in App Essentials",
+          "Custom layouts and branded user experience",
+          "Login, profiles, and live content",
+          "One primary business feature",
+          "Up to 2 standard integrations",
+          "2 revision rounds",
+        ],
+      },
+      {
+        name: "Enterprise",
+        label: "Make the experience more capable.",
+        description:
+          "Best for: organizations that need a connected, high-capability native mobile app built around their operations or customer experience.",
+        highlights: [
+          "Everything in App Business",
+          "Native iOS, Android, or both platforms",
+          "Custom backend, APIs, user roles, workflows, and admin tools",
+          "Advanced integrations, payments, notifications, mapping, or automation as scoped",
+          "Security, testing, documentation, training, and release support based on scope",
+          "Optional ongoing maintenance and support",
+        ],
+      },
+      {
+        name: "Custom",
+        label: "Build around the whole vision.",
+        description:
+          "Best for: teams with a unique product vision, advanced technical needs, or an evolving mobile roadmap.",
+        highlights: [
+          "Product strategy, discovery, prototypes, and phased roadmaps",
+          "Native iOS and Android development",
+          "Advanced backends, APIs, real-time features, automation, and integrations",
+          "Scalable architecture, security, testing, store release, and monitoring",
+          "Optional long-term development and maintenance support",
+        ],
+      },
+    ],
+  },
+  {
+    value: "branding",
+    label: "Branding & Design",
+    eyebrow: "A clearer identity",
+    title: "Make every touchpoint look like it belongs together.",
+    description:
+      "Build a visual identity and creative system that helps people recognize, trust, and remember your business.",
+    packages: [
+      {
+        name: "Essentials",
+        label: "Start with a confident visual base.",
+        description:
+          "Best for: businesses that need a clean, professional visual starting point.",
+        highlights: [
+          "New logo design or logo refresh",
+          "Primary logo with color, black, and white versions",
+          "Core color palette and typography recommendations",
+          "One social, favicon, or email-signature asset",
+          "Final web and print-ready files",
+          "2 revision rounds",
+        ],
+      },
+      {
+        name: "Campaign",
+        label: "Create a brand people recognize.",
+        description:
+          "Best for: businesses promoting a specific offer, event, launch, or campaign.",
+        highlights: [
+          "Everything in Design Essentials",
+          "One campaign creative direction",
+          "Up to 6 campaign assets",
+          "Channel and size variations",
+          "Reusable campaign templates",
+          "Web and print-ready files",
+          "3 revision rounds",
+        ],
+      },
+      {
+        name: "Brand",
+        label: "Bring the brand into motion.",
+        description:
+          "Best for: businesses that need a polished, scalable identity across every customer touchpoint.",
+        highlights: [
+          "Everything in Design Campaign",
+          "Full logo suite, color system, and typography system",
+          "Brand guidelines and visual-style direction",
+          "Reusable social, sales, and communication templates",
+          "Website visual-direction guidance",
+          "Final web, print, and editable brand files",
+          "4 revision rounds",
+        ],
+      },
+      {
+        name: "Custom",
+        label: "Design for the bigger picture.",
+        description:
+          "Best for: businesses with specialized design needs, major creative initiatives, or ongoing marketing demands.",
+        highlights: [
+          "Custom creative direction and project planning",
+          "Large campaigns, packaging, signage, events, and collateral",
+          "Advanced visual systems, illustrations, templates, and motion work",
+          "Website and app visual-design systems",
+          "Optional retainer support and production coordination",
+        ],
+      },
+    ],
+  },
+  {
+    value: "maintenance",
+    label: "Maintenance",
+    eyebrow: "Support after launch",
+    title: "Keep your digital presence working after launch.",
+    description:
+      "Stay current, supported, and ready to adapt without treating every update like a brand-new project.",
+    packages: [
+      {
+        name: "Essentials",
+        label: "Keep the basics handled.",
+        description:
+          "Best for: businesses that need baseline technical upkeep without ongoing content or feature work.",
+        highlights: [
+          "One website or one native app",
+          "Monthly updates and maintenance review",
+          "Backup, security, uptime, and core-function checks where applicable",
+          "Monthly maintenance summary",
+          "Queue-based support",
+          "Existing sites and apps accepted after assessment",
+        ],
+      },
+      {
+        name: "Business",
+        label: "Keep improving as you grow.",
+        description:
+          "Best for: businesses with an active website or app that needs regular attention beyond baseline upkeep.",
+        highlights: [
+          "Everything in Maintenance Essentials",
+          "Integration and workflow monitoring",
+          "Up to 1 hour of minor updates each month",
+          "Performance review and quarterly improvement check-in",
+          "Priority queue-based support",
+        ],
+      },
+      {
+        name: "Enterprise",
+        label: "Stay responsive and proactive.",
+        description:
+          "Best for: organizations that rely on their website or app for sales, customer service, or daily operations.",
+        highlights: [
+          "Everything in Maintenance Business",
+          "Advanced monitoring and integration checks",
+          "Up to 3 hours of monthly support and approved updates",
+          "Monthly reporting and planning check-in",
+          "Priority queue and business-hours urgent-issue escalation",
+        ],
+      },
+      {
+        name: "Custom",
+        label: "Support that fits the operation.",
+        description:
+          "Best for: organizations with complex technology, multiple systems, or specialized ongoing support requirements.",
+        highlights: [
+          "Support for multiple websites, apps, platforms, and environments",
+          "Custom monitoring, maintenance hours, reporting, and escalation procedures",
+          "Hosting, deployments, security, backups, integrations, and store-release management",
+          "Optional reserved development capacity and on-call coverage",
+          "Strategic technical planning and long-term support",
+        ],
+      },
+    ],
+  },
 ];
 
-/* WEB PACKAGES – condensed but detailed */
-const webTiers = [
-  {
-    name: "Starter Web App",
-    shortLabel: "Starter",
-    summary: "1–5 page marketing site for a clean, professional presence.",
-    bullets: [
-      "1–5 pages, brand-adapted templates, fully responsive.",
-      "Contact form and basic SEO setup.",
-      "2 revision rounds, no ecommerce, logins, or custom systems.",
-      "Soft turnaround: about 1 month.",
-    ],
-  },
-  {
-    name: "Growth Web App",
-    shortLabel: "Growth",
-    summary: "5–10 page custom site with CMS and light integrations.",
-    bullets: [
-      "5–10 pages, fully custom design.",
-      "Blog/CMS, 1–2 integrations, advanced forms, email marketing.",
-      "4 revision rounds, light animations.",
-      "Excludes ecommerce, auth, booking, payments.",
-    ],
-  },
-  {
-    name: "Pro Web App",
-    shortLabel: "Pro",
-    summary: "10–20 page web app with ecommerce, logins, and portals.",
-    bullets: [
-      "10–20 pages, fully custom.",
-      "Ecommerce, user accounts, payments, booking, membership if needed.",
-      "Client portal, 3–5 integrations, advanced animations.",
-      "Includes 6–12 months of maintenance by default.",
-    ],
-  },
-  {
-    name: "Enterprise Web App",
-    shortLabel: "Enterprise",
-    summary: "No page limit; complex systems and multi-site ecosystems.",
-    bullets: [
-      "Scoped by complexity and business goals, not page count.",
-      "Multi-role portals, advanced automations, complex backend and integrations.",
-      "Multi-site/multi-brand, internationalization, deeper analytics.",
-      "Includes 6–12 months of maintenance with phased delivery.",
-    ],
-  },
-];
+function PackagePanel({ service }: { service: Service }) {
+  const [selectedPackage, setSelectedPackage] = useState(0);
+  const activePackage = service.packages[selectedPackage];
 
-/* MOBILE PACKAGES */
-const mobileTiers = [
-  {
-    name: "Starter Mobile App",
-    shortLabel: "Starter",
-    summary: "3–5 screen native MVP for one platform (iOS or Android).",
-    bullets: [
-      "3–5 screens, focused single-purpose MVP.",
-      "Basic UI, navigation, local storage, analytics.",
-      "App Store / Play Store submission for one platform.",
-      "No backend/database, 2 revision rounds.",
-    ],
-  },
-  {
-    name: "Growth Mobile App",
-    shortLabel: "Growth",
-    summary: "5–10 screen app with backend, auth, and core flows.",
-    bullets: [
-      "5–10 screens, native iOS or Android (or both as an add-on).",
-      "Backend, auth, 1–2 API integrations, cloud sync.",
-      "Forms, basic profiles, offline mode, media support.",
-      "Excludes payments/ecommerce/subscriptions/real-time.",
-    ],
-  },
-  {
-    name: "Pro Mobile App",
-    shortLabel: "Pro",
-    summary: "10–20 screen app with payments, roles, and advanced features.",
-    bullets: [
-      "10–20 screens, native app with business-grade features.",
-      "Payments, ecommerce, subscriptions, roles, real-time features.",
-      "3–5 integrations, multi-language, social and in-app purchases.",
-      "Includes maintenance window; custom APIs reserved for Enterprise.",
-    ],
-  },
-  {
-    name: "Enterprise Mobile App",
-    shortLabel: "Enterprise",
-    summary: "Complex multi-platform systems with deeper backend work.",
-    bullets: [
-      "No practical screen limit; scoped around systems, not screens.",
-      "Custom APIs, complex backend, broader ecosystems (web + mobile).",
-      "Advanced security and infrastructure considerations.",
-      "Phased delivery with longer maintenance included.",
-    ],
-  },
-];
+  return (
+    <div className="mx-auto mt-5 w-full max-w-3xl sm:mt-6">
+      <div className="flex gap-1.5 overflow-x-auto px-0.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:justify-center">
+        {service.packages.map((item, index) => {
+          const isActive = selectedPackage === index;
 
-/* DESIGN PACKAGES */
-const designTiers = [
-  {
-    name: "Logo & Brand Starter",
-    shortLabel: "Starter",
-    summary: "Core identity for new brands and side projects.",
-    bullets: [
-      "Primary logo + simple lockup variants.",
-      "Basic color palette and typography choices.",
-      "One-page brand reference sheet (PDF).",
-      "2 revision rounds, files for web and print.",
-    ],
-  },
-  {
-    name: "Brand + Collateral",
-    shortLabel: "Brand + Collateral",
-    summary: "Brand identity plus essential marketing pieces.",
-    bullets: [
-      "Everything in Logo & Brand Starter.",
-      "Choice of several collateral items (e.g., business card, social templates, one-sheet).",
-      "Layered source files where applicable.",
-      "3 revision rounds across brand + collateral.",
-    ],
-  },
-  {
-    name: "Brand System",
-    shortLabel: "Brand System",
-    summary: "Deeper brand system to support long-term growth.",
-    bullets: [
-      "Extended logo system, color and type scales.",
-      "Multi-page brand guidelines (usage, examples, do/don't).",
-      "More collateral or UI starter kit aligned to your product.",
-      "Designed to match your web/app visual language.",
-    ],
-  },
-];
+          return (
+            <button
+              key={item.name}
+              type="button"
+              onClick={() => setSelectedPackage(index)}
+              aria-pressed={isActive}
+              className={cn(
+                "cursor-pointer shrink-0 rounded-md border px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-[0.12em] text-white transition-all sm:px-3.5",
+                isActive
+                  ? "border-white bg-white/20 text-white shadow-[0_0_20px_rgba(255,255,255,0.18)]"
+                  : "border-white/25 bg-transparent text-white hover:border-white/70 hover:bg-white/10 hover:text-white"
+              )}
+            >
+              {item.name}
+            </button>
+          );
+        })}
+      </div>
 
-/* MAINTENANCE TIERS – shared */
-const maintenanceTiers = [
-  {
-    name: "Essential Maintenance",
-    summary:
-      "Baseline protection and small tweaks for sites and apps.",
-    bullets: [
-      "Security and platform updates, bug fixes, basic monitoring.",
-      "2–3 hours/month for minor content or image changes.",
-      "Typical response time: 24–48 business hours.",
-    ],
-  },
-  {
-    name: "Professional Maintenance",
-    summary:
-      "Ongoing optimization and priority support for growing products.",
-    bullets: [
-      "5–8 hours/month, 12–24 hour response, priority queue.",
-      "Performance monitoring and monthly reports.",
-      "Limited feature tweaks (no major rebuilds or new systems).",
-    ],
-  },
-  {
-    name: "Enterprise Maintenance",
-    summary:
-      "Higher-touch support for mission-critical web and app systems.",
-    bullets: [
-      "10–15 hours/month, 4–12 hour response with same-day for emergencies.",
-      "Deeper optimization and strategic recommendations.",
-      "Still excludes full new-project builds (scoped separately).",
-    ],
-  },
-];
+      <article className="mt-3 border border-white/20 bg-white/[0.04] px-5 py-6 text-left sm:mt-4 sm:px-7 sm:py-7">
+        <div className="flex items-center justify-between gap-4 border-b border-white/15 pb-4">
+          <p className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-white">
+            {activePackage.name} package
+          </p>
+
+          <span className="h-px w-10 bg-white/70" aria-hidden="true" />
+        </div>
+
+        <h3 className="mt-5 text-xl font-semibold tracking-[-0.035em] text-white sm:text-2xl">
+          {activePackage.label}
+        </h3>
+
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-white">
+          {activePackage.description}
+        </p>
+
+        <ul className="mt-5 grid gap-2.5 sm:grid-cols-3 sm:gap-3">
+          {activePackage.highlights.map((highlight) => (
+            <li
+              key={highlight}
+              className="flex items-center gap-2 text-sm text-white"
+            >
+              <Check
+                className="size-3.5 shrink-0 text-white"
+                aria-hidden="true"
+              />
+              <span>{highlight}</span>
+            </li>
+          ))}
+        </ul>
+
+        <a
+          href="#contact"
+          className={cn(
+            buttonVariants({ size: "default" }),
+            "mt-6 w-full cursor-pointer border border-white bg-white text-black hover:border-zinc-200 hover:bg-zinc-200 hover:text-black active:border-zinc-300 active:bg-zinc-300 sm:w-auto"
+          )}
+        >
+          Discuss this package
+          <ArrowUpRight
+            data-icon="inline-end"
+            className="size-4"
+            aria-hidden="true"
+          />
+        </a>
+      </article>
+    </div>
+  );
+}
 
 export function ServicesSection() {
-  const [activeService, setActiveService] = useState<ServiceType>("web");
-
-  const activeTiers =
-    activeService === "web"
-      ? webTiers
-      : activeService === "mobile"
-      ? mobileTiers
-      : designTiers;
-
   return (
     <section
       id="services"
-      className="relative border-t border-border bg-background"
+      className="flex min-h-screen snap-start items-center bg-black px-5 py-20 text-white sm:px-8 sm:py-24"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.10)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.07)_1px,transparent_1px)] bg-[size:80px_80px] opacity-30" />
-      <div className="relative mx-auto max-w-6xl px-4 py-16 md:py-20 space-y-12">
-        {/* Header */}
-        <div className="space-y-3 max-w-3xl">
-          <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-            Services
+      <div className="mx-auto w-full max-w-6xl">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-[0.65rem] font-medium uppercase tracking-[0.23em] text-white">
+            What we build
           </p>
-          <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-            Everything Fountline builds for you.
+
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
+            Find the right starting point.
           </h2>
-          <p className="text-sm text-muted-foreground md:text-base">
-            Web apps, native mobile apps, and brand design packages—plus ongoing maintenance—so your
-            product and visuals stay aligned over time.
+
+          <p className="mt-3 text-sm leading-6 text-white sm:text-base">
+            Select a service, explore the package direction, and start where
+            your business is today.
           </p>
         </div>
 
-        {/* Toggle */}
-        <div className="inline-flex rounded-full border border-border bg-card/60 p-1 text-xs md:text-sm">
-          {SERVICE_OPTIONS.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => setActiveService(option.id)}
-              className={cn(
-                "px-4 py-1.5 rounded-full transition-colors",
-                "text-muted-foreground",
-                activeService === option.id &&
-                  "bg-foreground text-background shadow-[0_0_20px_rgba(148,163,184,0.6)]"
-              )}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Active service packages */}
-        <div className="space-y-6">
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {activeTiers.map((tier) => (
-              <Card
-                key={tier.name}
-                className={cn(
-                  "relative flex h-full flex-col rounded-2xl border border-slate-500/60",
-                  "bg-card/60 backdrop-blur-2xl",
-                  "before:pointer-events-none before:absolute before:inset-px before:rounded-2xl before:border before:border-white/10 before:content-['']",
-                  "shadow-[0_0_30px_rgba(15,23,42,0.9)] hover:shadow-[0_0_40px_rgba(148,163,184,0.55)] transition-shadow duration-300"
-                )}
-              >
-                <CardHeader className="space-y-2 pb-3">
-                  <CardTitle className="text-sm md:text-base tracking-tight">
-                    {tier.name}
-                  </CardTitle>
-                  <CardDescription className="text-[11px] text-muted-foreground md:text-xs">
-                    {tier.summary}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <ul className="space-y-1.5 text-[11px] leading-relaxed text-muted-foreground md:text-xs">
-                    {tier.bullets.map((item: string) => (
-                      <li key={item} className="flex gap-2">
-                        <span className="mt-[5px] h-1.5 w-1.5 flex-none rounded-full bg-slate-200/90 shadow-[0_0_8px_rgba(148,163,184,0.7)]" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter className="flex justify-center border-t border-border/70 pt-3">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="rounded-full border-slate-200/80 bg-slate-200/10 px-4 text-[11px] md:text-xs text-slate-100 hover:bg-slate-100 hover:text-slate-900 hover:border-slate-100 transition-colors"
-                    asChild
-                  >
-                    <a
-                      href={`/contact?category=${activeService}&package=${encodeURIComponent(
-                        tier.name
-                      )}`}
-                    >
-                      Start {tier.shortLabel}
-                    </a>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+        <Tabs defaultValue="web" className="mt-7 w-full sm:mt-8">
+          <div className="overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <TabsList className="mx-auto flex min-w-max gap-1 rounded-lg border border-white/20 bg-white/[0.04] p-1">
+              {services.map((service) => (
+                <TabsTrigger
+                  key={service.value}
+                  value={service.value}
+                  className="h-9 rounded-md border border-transparent px-3 text-[0.65rem] uppercase tracking-[0.1em] !text-white transition-all hover:!border-white/60 hover:!bg-white/10 hover:!text-white data-active:!border-white/80 data-active:!bg-white/20 data-active:!text-white data-active:shadow-[0_0_20px_rgba(255,255,255,0.18)] sm:h-10 sm:px-5 sm:text-xs"
+                >
+                  {service.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
           </div>
 
-          {/* “Across all packages” helper text, per service */}
-          {activeService === "web" && (
-            <p className="text-[11px] text-muted-foreground md:text-xs">
-              All web app packages include responsive design, baseline accessibility, analytics
-              hookup, and deployment to a production-ready environment.
-            </p>
-          )}
-          {activeService === "mobile" && (
-            <p className="text-[11px] text-muted-foreground md:text-xs">
-              All mobile packages use native builds, include store submission for at least one
-              platform, and follow your existing payment and revision policies.
-            </p>
-          )}
-          {activeService === "design" && (
-            <p className="text-[11px] text-muted-foreground md:text-xs">
-              All design packages include agreed file formats, clear licensing, and revision
-              structure aligned with Fountline’s policy framework.
-            </p>
-          )}
-        </div>
-
-        {/* Maintenance – always visible */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold md:text-base">
-            Maintenance packages for web and apps.
-          </h3>
-          <div className="grid gap-4 md:grid-cols-3">
-            {maintenanceTiers.map((tier) => (
-              <Card
-                key={tier.name}
-                className="rounded-2xl border border-border bg-card/70 p-5 backdrop-blur-xl"
-              >
-                <h4 className="text-sm font-medium md:text-base">{tier.name}</h4>
-                <p className="mt-2 text-[11px] text-muted-foreground md:text-xs">
-                  {tier.summary}
+          {services.map((service) => (
+            <TabsContent key={service.value} value={service.value}>
+              <div className="mx-auto mt-5 max-w-2xl text-center sm:mt-6">
+                <p className="text-[0.6rem] font-medium uppercase tracking-[0.2em] text-white">
+                  {service.eyebrow}
                 </p>
-                <ul className="mt-2 space-y-1.5 text-[11px] text-muted-foreground md:text-xs">
-                  {tier.bullets.map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="mt-[5px] h-1.5 w-1.5 flex-none rounded-full bg-slate-200/90" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            ))}
-          </div>
-        </div>
+
+                <h3 className="mt-2 text-lg font-medium tracking-[-0.03em] text-white sm:text-xl">
+                  {service.title}
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-white">
+                  {service.description}
+                </p>
+              </div>
+
+              <PackagePanel key={service.value} service={service} />
+            </TabsContent>
+          ))}
+        </Tabs>
       </div>
     </section>
   );
