@@ -221,6 +221,8 @@ export function ContactSection() {
       projectSummary: formData.get("projectSummary"),
       services: selectedServices,
       packages: selectedPackages,
+      // Honeypot (hidden field). Real visitors leave it empty.
+      companyWebsite: formData.get("companyWebsite"),
     };
 
     try {
@@ -234,22 +236,22 @@ export function ContactSection() {
 
       const responseText = await response.text();
 
-let result: { error?: string } = {};
+      let result: { error?: string } = {};
 
-if (responseText) {
-  try {
-    result = JSON.parse(responseText) as { error?: string };
-  } catch {
-    result = {};
-  }
-}
+      if (responseText) {
+        try {
+          result = JSON.parse(responseText) as { error?: string };
+        } catch {
+          result = {};
+        }
+      }
 
-if (!response.ok) {
-  throw new Error(
-    result.error ||
-      "Unable to send your inquiry. Please try again or email hello@fountlinedigital.com."
-  );
-}
+      if (!response.ok) {
+        throw new Error(
+          result.error ||
+            "Unable to send your inquiry. Please try again or email hello@fountlinedigital.com."
+        );
+      }
 
       form.reset();
       setSelectedServices([]);
@@ -308,9 +310,24 @@ if (!response.ok) {
         </div>
 
         <form
-          className="border border-border bg-card p-5 sm:p-7"
+          className="relative border border-border bg-card p-5 sm:p-7"
           onSubmit={handleSubmit}
         >
+          {/* Honeypot: hidden from people and screen readers; bots fill it in */}
+          <div
+            aria-hidden="true"
+            className="absolute -left-[9999px] h-0 w-0 overflow-hidden"
+          >
+            <label htmlFor="company-website">Company website</label>
+            <input
+              id="company-website"
+              name="companyWebsite"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label htmlFor="full-name" className={labelClassName}>
