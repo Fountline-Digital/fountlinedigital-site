@@ -1,9 +1,4 @@
-// FOR YOUR WEBSITE PROJECT (fountlinedigital.com), not the portal.
-// Turns a contact-form submission into a Lead ticket in the portal.
-//
-// .env (website, locally and in Netlify):
-//   PORTAL_INTAKE_URL=https://portal.fountlinedigital.com/api/intake/contact
-//   PORTAL_INTAKE_SECRET=<same value as INTAKE_SECRET in the portal>
+
 
 /** The JSON your ContactSection posts to /api/contact. */
 export type ContactPayload = {
