@@ -1,4 +1,4 @@
-// app/web-app-packages/page.tsx
+// app/web-app/page.tsx
 
 import { Metadata } from "next";
 import { cn } from "@/lib/utils";
@@ -142,19 +142,21 @@ export default function WebAppPackagesPage() {
                 </CardContent>
 
                 <CardFooter className="flex items-center justify-center border-t border-border/70 pt-4">
+                  {/* Base UI buttons use `render` (not asChild) to become a link */}
                   <Button
                     size="sm"
                     variant="outline"
                     className="rounded-full border-slate-200/80 bg-slate-200/10 px-5 text-xs md:text-[13px] text-slate-100 hover:bg-slate-100 hover:text-slate-900 hover:border-slate-100 transition-colors"
-                    asChild
+                    nativeButton={false}
+                    render={
+                      <a
+                        href={`/contact?category=web&package=${encodeURIComponent(
+                          tier.name
+                        )}`}
+                      />
+                    }
                   >
-                    <a
-                      href={`/contact?category=web&package=${encodeURIComponent(
-                        tier.name
-                      )}`}
-                    >
-                      Start with {tier.name.replace(" Web App", "")}
-                    </a>
+                    Start with {tier.name.replace(" Web App", "")}
                   </Button>
                 </CardFooter>
               </Card>
@@ -179,11 +181,10 @@ export default function WebAppPackagesPage() {
           <Button
             size="sm"
             className="rounded-full px-5 text-xs md:text-sm"
-            asChild
+            nativeButton={false}
+            render={<a href="/contact?category=web&package=custom" />}
           >
-            <a href="/contact?category=web&package=custom">
-              Talk about a custom build
-            </a>
+            Talk about a custom build
           </Button>
         </div>
       </section>

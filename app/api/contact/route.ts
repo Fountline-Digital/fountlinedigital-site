@@ -2,7 +2,15 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { sendLeadToPortal } from "@/lib/portal-intake";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Created on first use, not at import: `next build` loads this file without your
+// environment variables, and Resend throws if the key is missing.
+let resendClient: Resend | null = null;
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) throw new Error("RESEND_API_KEY is not set");
+  resendClient ??= new Resend(key);
+  return resendClient;
+}
 
 const CONTACT_EMAIL = "hello@fountlinedigital.com";
 const FROM_EMAIL = "Fountline Digital <hello@fountlinedigital.com>";
@@ -118,37 +126,44 @@ export async function POST(request: Request) {
     // Send the email and create the portal lead at the same time.
     // The visitor sees success if either one worked, so nothing is lost if one is down.
     const [emailResult, portalResult] = await Promise.all([
-      resend.emails.send({
-        from: FROM_EMAIL,
-        to: [CONTACT_EMAIL],
-        replyTo: email,
-        subject: `New inquiry from ${fullName} — ${companyName}`,
-        html: `
-          <h1>New Fountline Digital inquiry</h1>
-
-          <h2>Contact</h2>
-          <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
-          <p><strong>Company:</strong> ${escapeHtml(companyName)}</p>
-          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-          <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
-          <p><strong>Preferred contact method:</strong> ${escapeHtml(formatLabel(contactMethod))}</p>
-
-          <h2>Requested services</h2>
-          ${listHtml(services)}
-
-          <h2>Package interest</h2>
-          ${listHtml(packages)}
-
-          <h2>Project details</h2>
-          <p><strong>Timeline:</strong> ${escapeHtml(formatLabel(timeline))}</p>
-          <p><strong>Current link:</strong> ${
-            currentLink ? `<a href="${escapeHtml(currentLink)}">${escapeHtml(currentLink)}</a>` : "Not provided"
-          }</p>
-          <p><strong>Goal:</strong> ${escapeHtml(projectGoal)}</p>
-          <p><strong>Summary:</strong></p>
-          <p>${escapeHtml(projectSummary).replace(/\n/g, "<br />")}</p>
-        `,
-      }),
+      // A missing key or a Resend outage counts as "email failed", so the portal lead still goes through
+      (async () => {
+        try {
+          return await getResend().emails.send({
+            from: FROM_EMAIL,
+            to: [CONTACT_EMAIL],
+            replyTo: email,
+            subject: `New inquiry from ${fullName} — ${companyName}`,
+            html: `
+              <h1>New Fountline Digital inquiry</h1>
+    
+              <h2>Contact</h2>
+              <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
+              <p><strong>Company:</strong> ${escapeHtml(companyName)}</p>
+              <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+              <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+              <p><strong>Preferred contact method:</strong> ${escapeHtml(formatLabel(contactMethod))}</p>
+    
+              <h2>Requested services</h2>
+              ${listHtml(services)}
+    
+              <h2>Package interest</h2>
+              ${listHtml(packages)}
+    
+              <h2>Project details</h2>
+              <p><strong>Timeline:</strong> ${escapeHtml(formatLabel(timeline))}</p>
+              <p><strong>Current link:</strong> ${
+                currentLink ? `<a href="${escapeHtml(currentLink)}">${escapeHtml(currentLink)}</a>` : "Not provided"
+              }</p>
+              <p><strong>Goal:</strong> ${escapeHtml(projectGoal)}</p>
+              <p><strong>Summary:</strong></p>
+              <p>${escapeHtml(projectSummary).replace(/\n/g, "<br />")}</p>
+            `,
+          });
+        } catch (err) {
+          return { error: err };
+        }
+      })(),
       // Only the cleaned, validated values go to the portal
       sendLeadToPortal(
         {
